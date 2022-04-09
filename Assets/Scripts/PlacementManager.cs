@@ -32,7 +32,7 @@ public class PlacementManager : MonoBehaviour
     void Awake()
     {
         aRRaycastManager = GetComponent<ARRaycastManager>();
-        //confirmButton.onClick.AddListener(ConfirmPlace);
+        confirmButton.onClick.AddListener(ConfirmPlace);
         placedPrefab = null;
         lastSelectedObject = null;
     }
@@ -46,6 +46,10 @@ public class PlacementManager : MonoBehaviour
             Touch touch = Input.GetTouch(0);
 
             touchPosition = touch.position;
+
+            bool isOverUI = touchPosition.IsPointOverUIObject();
+
+            if (isOverUI) return;
 
             if (touch.phase == TouchPhase.Began)
             {
@@ -72,6 +76,7 @@ public class PlacementManager : MonoBehaviour
             if (touch.phase == TouchPhase.Ended)
             {
                 placedPrefab = null;
+                lastSelectedObject = null;
             }
         }
 
@@ -79,7 +84,7 @@ public class PlacementManager : MonoBehaviour
         {
             Pose hitPose = hits[0].pose;
 
-            if (lastSelectedObject == null && placedPrefab != null)
+            if (lastSelectedObject == null)
             {
                 lastSelectedObject = Instantiate(placedPrefab, hitPose.position, hitPose.rotation).GetComponent<PlacementObject>();
             }
@@ -160,7 +165,7 @@ public class PlacementManager : MonoBehaviour
         {
             lastSelectedObject.transform.Rotate(Vector3.down, rotationSpeed * Time.deltaTime);
         }
-
+        return;
 
     }
     public void RotateXminus()
@@ -169,6 +174,6 @@ public class PlacementManager : MonoBehaviour
         {
             lastSelectedObject.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
         }
-
+        return;
     }
 }
