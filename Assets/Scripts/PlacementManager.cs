@@ -65,38 +65,55 @@ public class PlacementManager : MonoBehaviour
                         PlacementObject[] allOtherObjects = FindObjectsOfType<PlacementObject>();
                         foreach (PlacementObject placementObject in allOtherObjects)
                         {
-                            placementObject.Selected = placementObject == lastSelectedObject;
+                            if (placementObject != lastSelectedObject)
+                            {
+                                placementObject.Selected = false;
+                            }
+                            else
+                            {
+                                placementObject.Selected = true;
+                            }
+                            //placementObject.Selected = placementObject == lastSelectedObject;
                         }
                         ManageLastSelectedObject(lastSelectedObject, true);
                         //ChangeSelectedObject(lastSelectedObject);
 
                     }
                 }
-            }
-            if (touch.phase == TouchPhase.Ended)
-            {
-                placedPrefab = null;
-                lastSelectedObject = null;
-            }
-        }
-
-        if (aRRaycastManager.Raycast(touchPosition, hits, TrackableType.Planes))
-        {
-            Pose hitPose = hits[0].pose;
-
-            if (lastSelectedObject == null)
-            {
-                lastSelectedObject = Instantiate(placedPrefab, hitPose.position, hitPose.rotation).GetComponent<PlacementObject>();
-            }
-            else
-            {
-                if (lastSelectedObject.Selected)
+                if (aRRaycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
                 {
-                    lastSelectedObject.transform.position = hitPose.position;
-                    lastSelectedObject.transform.rotation = hitPose.rotation;
+                    Pose hitPose = hits[0].pose;
+
+                    if (lastSelectedObject == null)
+                    {
+                        lastSelectedObject = Instantiate(placedPrefab, hitPose.position, hitPose.rotation).GetComponent<PlacementObject>();
+                    }
+
                 }
             }
+
+            if (touch.phase == TouchPhase.Moved)
+            {
+                if (aRRaycastManager.Raycast(touchPosition, hits, TrackableType.Planes))
+                {
+                    Pose hitPose = hits[0].pose;
+
+                    if (lastSelectedObject != null && lastSelectedObject.Selected)
+                    {
+                        lastSelectedObject.transform.parent.position = hitPose.position;
+                        lastSelectedObject.transform.parent.rotation = hitPose.rotation;
+                    }
+
+                }
+            }
+
+            if (touch.phase == TouchPhase.Moved)
+            {
+                placedPrefab = null;
+            }
         }
+
+        
     }
 
     private void ManageLastSelectedObject(PlacementObject lastSelectedObject, bool state)
@@ -133,6 +150,7 @@ public class PlacementManager : MonoBehaviour
             ManageLastSelectedObject(lastSelectedObject, false);
             string layerNumber = placedPrefab.layer.ToString();
             lastSelectedObject.Selected = false;
+            lastSelectedObject = null;
             popup(layerNumber);
         }
     }
@@ -141,6 +159,7 @@ public class PlacementManager : MonoBehaviour
     public void SetPrefabType(GameObject prefabType)
     {
         placedPrefab = prefabType;
+        Debug.Log("selected");
     }
 
     public void popup(string name)

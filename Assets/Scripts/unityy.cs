@@ -11,7 +11,7 @@ public class unityy : MonoBehaviour
     //[SerializeField]
     GameObject spawnableObject;
     Camera arCam;
-    public Canvas[] canvases;
+    //public Canvas[] canvases;
     GameObject spawnedObject;
     private ARRaycastManager aRRaycastManager;
 
@@ -34,14 +34,10 @@ public class unityy : MonoBehaviour
         if (!TryGetTouchPosition(out Vector2 touchPosition))
             return;
 
-        bool isOverUI = touchPosition.IsPointOverUIObject();
-
-        if (isOverUI) return;
-
         RaycastHit hit;
         Ray ray = arCam.ScreenPointToRay(Input.GetTouch(0).position);
 
-        if (!isOverUI && aRRaycastManager.Raycast(touchPosition, hits, TrackableType.Planes))
+        if (aRRaycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
         {
             //foreach (var plane in aRPlaneManager.trackables)
             //{
@@ -57,11 +53,11 @@ public class unityy : MonoBehaviour
                     if (hit.collider.gameObject.tag == "Spawnable")
                     {
                         spawnedObject = hit.collider.gameObject;
-                        MananageObjectPositionRotation(spawnedObject);
+                        //MananageObjectPositionRotation(spawnedObject);
 
 
                     }
-                    else if (spawnableObject != null)
+                    else 
                     {
                         SpawnPrefab(hits[0].pose.position, hits[0].pose.rotation);
                     }

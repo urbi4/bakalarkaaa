@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 8195086043258938010}
   - component: {fileID: 5305111959301670934}
   - component: {fileID: 3609246378840427750}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: table
   m_TagString: Spawnable
   m_Icon: {fileID: 0}

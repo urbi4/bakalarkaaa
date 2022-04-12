@@ -11,6 +11,7 @@ public class Rotator : MonoBehaviour
     void Update()
     {
         transform.Rotate(speed * Time.deltaTime, Space.Self);
+       
     }
 
 }
