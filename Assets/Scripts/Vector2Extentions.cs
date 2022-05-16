@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
     public static class Vector2Extentions
     {
-        public static bool IsPointOverUIObject(this Vector2 pos)
+        public static bool PositionOverUIElement(this Vector2 pos)
         {
         if (EventSystem.current.IsPointerOverGameObject())
         {
